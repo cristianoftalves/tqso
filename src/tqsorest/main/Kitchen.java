@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.EnumMap;
 
 import tqsorest.main.Dish.DishType;
+import tqsorest.main.Ingredient.IngredientType;
 
 public class Kitchen {
 	// Class Members
@@ -32,10 +33,24 @@ public class Kitchen {
 		return true;
 	}
 	
-	public ArrayList<Dish> makeOrder(DishType dishType, int quantity) {
+	public ArrayList<Dish> makeOrder(DishType dishType, int quantity) throws NoIngredientsException{
 		ArrayList<Dish> dishesToReturn = new ArrayList<Dish>();
-		checkOrder(dishType);
-		dishesToReturn.add(new Dish(DishType.MEAT_WATER));
+		
+		for(int i=0;i<quantity;i++)
+		{
+			if(!checkOrder(dishType))
+			{
+				throw new NoIngredientsException();
+			}
+			
+			ArrayList<Ingredient.IngredientType> ingredientes = Dish.getDishIngredientsForAGivenType(dishType);
+			for(int j=0;j<ingredientes.size();j++)
+			{
+				m_stock.put(ingredientes.get(j),m_stock.get(ingredientes.get(j))-1);
+			}
+			dishesToReturn.add(new Dish(DishType.MEAT_WATER));
+		}
+		
 		return dishesToReturn;
 	}
 }
